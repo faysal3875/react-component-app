@@ -16,7 +16,6 @@ class Objects extends Component {
     const index = objects.indexOf(obj);
     objects[index] = { ...objects[index] };
     objects[index].Liked = !objects[index].Liked;
-    console.log(objects[index].Liked);
     this.setState({ objects });
   };
   render() {
