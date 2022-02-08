@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-const Like = ({ onLike}) => {
+const Like = ({ onLike, liked }) => {
   let classes = "fa fa-heart";
-  classes += onLike ? "-o" : "";
-  return <i onClick={()=>{onLike()}} className={classes} style={{ cursor: "pointer" }}></i>;
+  classes += !liked ? "-o" : "";
+  return (
+    <i onClick={onLike} className={classes} style={{ cursor: "pointer" }}></i>
+  );
 };
 
 export default Like;

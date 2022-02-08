@@ -11,12 +11,20 @@ class Objects extends Component {
     );
     this.setState({ objects });
   };
+  handleLike = (obj) => {
+    const objects = [...this.state.objects];
+    const index = objects.indexOf(obj);
+    objects[index] = { ...objects[index] };
+    objects[index].Liked = !objects[index].Liked;
+    console.log(objects[index].Liked);
+    this.setState({ objects });
+  };
   render() {
     if (this.state.objects.length === 0)
       return <p>There are no objects in database!</p>;
     return (
       <React.Fragment>
-          <p>Showing {this.state.objects.length} objects in database.</p>
+        <p>Showing {this.state.objects.length} objects in database.</p>
         <table className="table">
           <thead>
             <tr>
@@ -24,6 +32,7 @@ class Objects extends Component {
               <th>Genre</th>
               <th>Stock</th>
               <th>Rental</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -34,6 +43,9 @@ class Objects extends Component {
                 <td>{obj.genre.name}</td>
                 <td>{obj.dailyRentalRate}</td>
                 <td>{obj.numberInStock}</td>
+                <td>
+                  <Like onLike={() => this.handleLike(obj)} liked={obj.Liked} />
+                </td>
                 <td>
                   <button
                     onClick={() => this.handleDelete(obj)}
