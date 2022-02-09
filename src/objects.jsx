@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { getMovies } from "./Services/fakeMovieService";
-import Like from "./Like";
+import Like from "./components/Like";
+import Pagination from "./components/Pagination";
+import { Paginate } from "./utils/paginate";
 class Objects extends Component {
   state = {
     objects: getMovies(),
+    pageSize: 5,
+    currentPage: 1,
   };
   handleDelete = (obj) => {
     const objects = this.state.objects.filter(
@@ -18,12 +22,17 @@ class Objects extends Component {
     objects[index].Liked = !objects[index].Liked;
     this.setState({ objects });
   };
+  handlePage = (page) => {
+    this.setState({ currentPage: page });
+  };
   render() {
-    if (this.state.objects.length === 0)
-      return <p>There are no objects in database!</p>;
+    const { length: count } = this.state.objects;
+    const { pageSize, currentPage, objects: allObjects } = this.state;
+    if (count === 0) return <p>There are no objects in database!</p>;
+    const objects = Paginate(allObjects, currentPage, pageSize)
     return (
       <React.Fragment>
-        <p>Showing {this.state.objects.length} objects in database.</p>
+        <p>Showing {count} objects in database.</p>
         <table className="table">
           <thead>
             <tr>
@@ -36,7 +45,7 @@ class Objects extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.objects.map((obj) => (
+            {objects.map((obj) => (
               <tr key={obj._id}>
                 <td>{obj.title}</td>
                 <td>{obj.genre.name}</td>
@@ -57,6 +66,12 @@ class Objects extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          onPageChange={this.handlePage}
+          currentPage={currentPage}
+        />
       </React.Fragment>
     );
   }
