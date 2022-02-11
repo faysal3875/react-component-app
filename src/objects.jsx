@@ -13,7 +13,8 @@ class Objects extends Component {
     currentPage: 1,
   };
   componentDidMount() {
-    this.setState({ objects: getMovies(), genres: getGenres() });
+    const genres = [{ name: "All Genres" }, ...getGenres()];
+    this.setState({ objects: getMovies(), genres });
   }
   handleDelete = (obj) => {
     const objects = this.state.objects.filter(
@@ -28,12 +29,12 @@ class Objects extends Component {
     objects[index].Liked = !objects[index].Liked;
     this.setState({ objects });
   };
-  handlePage = (page) => {
+  handlePageChange = (page) => {
     this.setState({ currentPage: page });
   };
 
   handleListChange = (genre) => {
-    this.setState({ selectedGenre: genre });
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
   render() {
     const { length: count } = this.state.objects;
@@ -44,9 +45,10 @@ class Objects extends Component {
       objects: allObjects,
     } = this.state;
 
-    const filtered = selectedGenre
-      ? allObjects.filter((obj) => obj.genre._id === selectedGenre._id)
-      : allObjects;
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? allObjects.filter((obj) => obj.genre._id === selectedGenre._id)
+        : allObjects;
     if (count === 0) return <p>There are no objects in database!</p>;
     const objects = Paginate(filtered, currentPage, pageSize);
     return (
@@ -99,7 +101,7 @@ class Objects extends Component {
           <Pagination
             itemsCount={filtered.length}
             pageSize={pageSize}
-            onPageChange={this.handlePage}
+            onPageChange={this.handlePageChange}
             currentPage={currentPage}
           />
         </div>
