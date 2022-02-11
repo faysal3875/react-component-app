@@ -5,12 +5,14 @@ import Pagination from "./components/Pagination";
 import { Paginate } from "./utils/paginate";
 import List from "./components/listGroup";
 import MoviesTable from "./components/MoviesTable";
+import _ from "lodash";
 class Objects extends Component {
   state = {
     objects: [],
     genres: [],
     pageSize: 5,
     currentPage: 1,
+    sortedColumn: { path: "title", order: "asc" },
   };
   componentDidMount() {
     const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
@@ -37,7 +39,14 @@ class Objects extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
   handleSort = (path) => {
-    console.log(path);
+    const sortedColumn = { ...this.state.sortedColumn };
+    if (sortedColumn.path === path) {
+      sortedColumn.order = sortedColumn.order === "asc" ? "desc" : "asc";
+    } else {
+      sortedColumn.path = path;
+      sortedColumn.order = "asc";
+    }
+    this.setState({ sortedColumn});
   };
   render() {
     const { length: count } = this.state.objects;
@@ -45,6 +54,7 @@ class Objects extends Component {
       pageSize,
       currentPage,
       selectedGenre,
+      sortedColumn,
       objects: allObjects,
     } = this.state;
 
@@ -52,8 +62,13 @@ class Objects extends Component {
       selectedGenre && selectedGenre._id
         ? allObjects.filter((obj) => obj.genre._id === selectedGenre._id)
         : allObjects;
+    const sorted = _.orderBy(
+      filtered,
+      [sortedColumn.path],
+      [sortedColumn.order]
+    );
     if (count === 0) return <p>There are no objects in database!</p>;
-    const objects = Paginate(filtered, currentPage, pageSize);
+    const objects = Paginate(sorted, currentPage, pageSize);
     return (
       <div className="row">
         <div className="col-3">
