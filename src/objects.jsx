@@ -38,15 +38,8 @@ class Objects extends Component {
   handleListChange = (genre) => {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
-  handleSort = (path) => {
-    const sortedColumn = { ...this.state.sortedColumn };
-    if (sortedColumn.path === path) {
-      sortedColumn.order = sortedColumn.order === "asc" ? "desc" : "asc";
-    } else {
-      sortedColumn.path = path;
-      sortedColumn.order = "asc";
-    }
-    this.setState({ sortedColumn});
+  handleSort = (sortedColumn) => {
+    this.setState({ sortedColumn });
   };
   render() {
     const { length: count } = this.state.objects;
@@ -83,6 +76,7 @@ class Objects extends Component {
           <MoviesTable
             objects={objects}
             onLike={this.handleLike}
+            sortedColumn={sortedColumn}
             onDelete={this.handleDelete}
             onSort={this.handleSort}
           />
