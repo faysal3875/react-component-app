@@ -51,15 +51,7 @@ class Objects extends Component {
       objects: allObjects,
     } = this.state;
 
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? allObjects.filter((obj) => obj.genre._id === selectedGenre._id)
-        : allObjects;
-    const sorted = _.orderBy(
-      filtered,
-      [sortedColumn.path],
-      [sortedColumn.order]
-    );
+    const { sorted, filtered } = this.objectFiltered(selectedGenre, allObjects, sortedColumn);
     if (count === 0) return <p>There are no objects in database!</p>;
     const objects = Paginate(sorted, currentPage, pageSize);
     return (
@@ -89,6 +81,18 @@ class Objects extends Component {
         </div>
       </div>
     );
+  }
+
+  objectFiltered(selectedGenre, allObjects, sortedColumn) {
+    const filtered = selectedGenre && selectedGenre._id
+      ? allObjects.filter((obj) => obj.genre._id === selectedGenre._id)
+      : allObjects;
+    const sorted = _.orderBy(
+      filtered,
+      [sortedColumn.path],
+      [sortedColumn.order]
+    );
+    return { sorted, filtered };
   }
 }
 
